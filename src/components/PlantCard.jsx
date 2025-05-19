@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useRef } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function daysSince(dateString) {
   const now = new Date();
@@ -14,6 +16,8 @@ export default function PlantCard({
   onToggleFavorite,
   isDarkMode,
 }) {
+  const hasShown = useRef(false);
+
   const simple = (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -55,8 +59,24 @@ export default function PlantCard({
 
   const needsWatering = daysSince(plant.lastWatered) >= plant.wateringFrequency;
 
+  const showToastMessage = () => {
+    if (needsWatering) {
+      toast.error(`${plant.name} needs water!`, {
+        position: "bottom-right",
+        toastId: `water-${plant.id}`,
+      });
+
+      hasShown.current = true;
+
+      setTimeout(() => {
+        hasShown.current = false;
+      }, 5000);
+    }
+  };
+
   return (
     <div
+      onMouseEnter={showToastMessage}
       style={{
         border: `2px solid ${needsWatering ? "red" : "#ccc"}`,
         borderRadius: "8px",
@@ -69,6 +89,7 @@ export default function PlantCard({
         boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
       }}
     >
+      <ToastContainer />
       <div
         style={{
           display: "flex",
