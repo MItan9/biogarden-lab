@@ -7,9 +7,14 @@ export default function Header({ isDarkMode, toggleTheme }) {
       style={{
         display: "flex",
         justifyContent: "space-between",
+        position: "fixed",
+        top: "0",
+        left: "0",
+        right: "0",
+        zIndex: "1000",
         background: isDarkMode
-          ? "rgba(0, 0, 0, 0.5)"
-          : "rgba(255, 255, 255, 0.5)",
+          ? "rgba(0, 0, 0, 0.7)"
+          : "rgba(255, 255, 255, 0.7)",
         color: isDarkMode ? "rgba(2, 152, 80, 0.7)" : "rgba(3, 46, 25, 0.7)",
       }}
     >
