@@ -1,9 +1,7 @@
-
-
 body {
   margin: 0;
   padding: 0;
-  background-image: url('./assets/l.jpg');
+  background-image: url('./assets/background.jpg');
   background-size: cover;
   background-attachment: fixed; /* ВАЖНО — фон "прилипает" */
   background-position: center;
@@ -11,25 +9,4 @@ body {
   font-family: sans-serif;
 }
 
-/* .app {
-  position: relative;
-  z-index: 1;
-  padding: 2rem;
-  min-height: 200vh;
-  color: #222;
-  text-shadow: none;
-} */
 
-/* Оверлейный слой */
-.app::before {
-  content: "";
-  position: fixed; 
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.3); 
-  /* background: rgba(0, 0, 0, 0.6);  */
-
-  z-index: -1;
-}
