@@ -60,16 +60,27 @@ function App() {
 
       <Header isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
       <PlantForm isDarkMode={isDarkMode} onAddPlant={addPlant} />
-      {plants.map((plant) => (
-        <PlantCard
-          key={plant.id}
-          plant={plant}
-          onWater={waterPlant}
-          onDelete={deletePlant}
-          onToggleFavorite={toggleFavorite}
-          isDarkMode={isDarkMode}
-        />
-      ))}
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gap: "1.5rem",
+          padding: "1rem",
+          alignItems: "stretch",
+        }}
+      >
+        {plants.map((plant) => (
+          <PlantCard
+            key={plant.id}
+            plant={plant}
+            onWater={waterPlant}
+            onDelete={deletePlant}
+            onToggleFavorite={toggleFavorite}
+            isDarkMode={isDarkMode}
+          />
+        ))}
+      </div>
 
       <main style={{ padding: "1rem", position: "relative", zIndex: 1 }}>
         <NotificationManager />

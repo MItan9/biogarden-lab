@@ -40,7 +40,9 @@ export default function PlantCard({
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      fill="#00BFFF"
+      fill="#FFD700"
+      stroke={isDarkMode ? "#FFD700" : "black"}
+      strokeWidth={1.5}
       width="24"
       height="24"
     >
@@ -78,6 +80,8 @@ export default function PlantCard({
     <div
       onMouseEnter={showToastMessage}
       style={{
+        height: "90%",
+        width: "70%",
         border: `2px solid ${needsWatering ? "red" : "#ccc"}`,
         borderRadius: "8px",
         padding: "1rem",
@@ -97,10 +101,19 @@ export default function PlantCard({
           alignItems: "center",
         }}
       >
-        <h3 style={{ margin: 0, color: isDarkMode ? "white" : "black" }}>
+        <h3
+          style={{
+            margin: 0,
+            color: isDarkMode ? "white" : "black",
+            wordBreak: "break-word", // перенос слов, если длинные
+            whiteSpace: "normal",
+            lineHeight: 1.3,
+          }}
+        >
           {plant.name}{" "}
           <span
             style={{
+              display: "block", // перенос на следующую строку
               fontWeight: "normal",
               fontSize: "0.9rem",
             }}
