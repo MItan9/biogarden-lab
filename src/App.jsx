@@ -24,6 +24,14 @@ function App() {
     setPlants((prev) => [...prev, plant]);
   };
 
+  const waterPlant = (id) => {
+    setPlants(
+      plants.map((p) =>
+        p.id === id ? { ...p, lastWatered: new Date().toISOString() } : p
+      )
+    );
+  };
+
   const deletePlant = (id) => {
     setPlants(plants.filter((p) => p.id !== id));
   };
@@ -56,8 +64,10 @@ function App() {
         <PlantCard
           key={plant.id}
           plant={plant}
+          onWater={waterPlant}
           onDelete={deletePlant}
           onToggleFavorite={toggleFavorite}
+          isDarkMode={isDarkMode}
         />
       ))}
 

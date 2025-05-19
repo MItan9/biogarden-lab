@@ -1,13 +1,26 @@
 import React from "react";
 
-export default function PlantCard({ plant, onDelete, onToggleFavorite }) {
+function daysSince(dateString) {
+  const now = new Date();
+  const last = new Date(dateString);
+  const diff = Math.floor((now - last) / (1000 * 60 * 60 * 24));
+  return diff;
+}
+
+export default function PlantCard({
+  plant,
+  onWater,
+  onDelete,
+  onToggleFavorite,
+  isDarkMode,
+}) {
   const simple = (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth={1.5}
-      stroke="currentColor"
+      stroke={isDarkMode ? "white" : "currentColor"}
       width="24"
       height="24"
     >
@@ -23,7 +36,7 @@ export default function PlantCard({ plant, onDelete, onToggleFavorite }) {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      fill="currentColor"
+      fill="#00BFFF"
       width="24"
       height="24"
     >
@@ -40,14 +53,19 @@ export default function PlantCard({ plant, onDelete, onToggleFavorite }) {
     </svg>
   );
 
+  const needsWatering = daysSince(plant.lastWatered) >= plant.wateringFrequency;
+
   return (
     <div
       style={{
+        border: `2px solid ${needsWatering ? "red" : "#ccc"}`,
         borderRadius: "8px",
         padding: "1rem",
         margin: "1rem auto",
         maxWidth: "600px",
-        background: "rgba(255,255,255,0.8)",
+        background: isDarkMode
+          ? "rgba(0, 0, 0, 0.5)"
+          : "rgba(255, 255, 255, 0.5)",
         boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
       }}
     >
@@ -58,9 +76,14 @@ export default function PlantCard({ plant, onDelete, onToggleFavorite }) {
           alignItems: "center",
         }}
       >
-        <h3 style={{ margin: 0 }}>
+        <h3 style={{ margin: 0, color: isDarkMode ? "white" : "black" }}>
           {plant.name}{" "}
-          <span style={{ fontWeight: "normal", fontSize: "0.9rem" }}>
+          <span
+            style={{
+              fontWeight: "normal",
+              fontSize: "0.9rem",
+            }}
+          >
             ({plant.type})
           </span>
         </h3>
@@ -91,12 +114,41 @@ export default function PlantCard({ plant, onDelete, onToggleFavorite }) {
         />
       )}
 
-      <p style={{ margin: "0.5rem 0" }}>
+      <p style={{ margin: "0.5rem 0", color: isDarkMode ? "white" : "black" }}>
+        Last watered: {daysSince(plant.lastWatered)} days ago
+      </p>
+      <p style={{ margin: "0.5rem 0", color: isDarkMode ? "white" : "black" }}>
         Water every {plant.wateringFrequency} day(s)
       </p>
 
       <div style={{ display: "flex", gap: "1rem" }}>
-        <button onClick={() => onDelete(plant.id)}>Delete</button>
+        <button
+          onClick={() => onWater(plant.id)}
+          style={{
+            background: isDarkMode ? "rgb(38, 86, 39)" : " rgb(76, 175, 80)",
+            color: "#fff",
+            padding: "0.5rem 1rem",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+        >
+          Water
+        </button>
+
+        <button
+          onClick={() => onDelete(plant.id)}
+          style={{
+            background: " rgb(255, 0, 0)",
+            color: "#fff",
+            padding: "0.5rem 1rem",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+        >
+          Delete
+        </button>
       </div>
     </div>
   );
