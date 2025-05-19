@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/biogarden/static/css/main.d6cde081.css",
-    "main.js": "/biogarden/static/js/main.feedf6ee.js",
-    "static/media/background.jpg": "/biogarden/static/media/background.955dcc2e8fd86d8e42a4.jpg",
-    "static/media/tree.png": "/biogarden/static/media/tree.946af6d9ea30a497a4e7.png",
-    "index.html": "/biogarden/index.html",
-    "main.d6cde081.css.map": "/biogarden/static/css/main.d6cde081.css.map",
-    "main.feedf6ee.js.map": "/biogarden/static/js/main.feedf6ee.js.map"
+    "main.css": "/biogarden-lab/static/css/main.664f4726.css",
+    "main.js": "/biogarden-lab/static/js/main.ee3ccff9.js",
+    "static/media/background.jpg": "/biogarden-lab/static/media/background.955dcc2e8fd86d8e42a4.jpg",
+    "static/media/tree.png": "/biogarden-lab/static/media/tree.946af6d9ea30a497a4e7.png",
+    "index.html": "/biogarden-lab/index.html",
+    "main.664f4726.css.map": "/biogarden-lab/static/css/main.664f4726.css.map",
+    "main.ee3ccff9.js.map": "/biogarden-lab/static/js/main.ee3ccff9.js.map"
   },
   "entrypoints": [
-    "static/css/main.d6cde081.css",
-    "static/js/main.feedf6ee.js"
+    "static/css/main.664f4726.css",
+    "static/js/main.ee3ccff9.js"
   ]
 }
