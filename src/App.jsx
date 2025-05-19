@@ -57,8 +57,10 @@ function App() {
           zIndex: -1,
         }}
       />
+      <div style={{ marginTop: "10rem" }}>
+        <Header isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+      </div>
 
-      <Header isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
       <PlantForm isDarkMode={isDarkMode} onAddPlant={addPlant} />
 
       <div
