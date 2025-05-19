@@ -104,49 +104,9 @@ function App() {
         filterType={filterType}
         setFilterType={setFilterType}
         allTypes={[...new Set(plants.map((p) => p.type))]}
+        isDarkMode={isDarkMode}
       />
 
-      {/* <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-          gap: "1.5rem",
-          justifyItems: "center",
-          padding: "2rem",
-        }}
-      >
-        {filteredPlants.map((plant) => (
-          <PlantCard
-            key={plant.id}
-            plant={plant}
-            onWater={waterPlant}
-            onDelete={deletePlant}
-            onToggleFavorite={toggleFavorite}
-            isDarkMode={isDarkMode}
-          />
-        ))}
-      </div>
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: "1.5rem",
-          padding: "1rem",
-          alignItems: "stretch",
-        }}
-      >
-        {plants.map((plant) => (
-          <PlantCard
-            key={plant.id}
-            plant={plant}
-            onWater={waterPlant}
-            onDelete={deletePlant}
-            onToggleFavorite={toggleFavorite}
-            isDarkMode={isDarkMode}
-          />
-        ))}
-      </div> */}
       {isFiltering ? (
         // Показываем отфильтрованный список
         <div
