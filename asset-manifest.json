@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/biogarden-lab/static/css/main.664f4726.css",
-    "main.js": "/biogarden-lab/static/js/main.1e46151f.js",
+    "main.js": "/biogarden-lab/static/js/main.3684e7fb.js",
     "static/media/background.jpg": "/biogarden-lab/static/media/background.955dcc2e8fd86d8e42a4.jpg",
     "static/media/tree.png": "/biogarden-lab/static/media/tree.946af6d9ea30a497a4e7.png",
     "index.html": "/biogarden-lab/index.html",
     "main.664f4726.css.map": "/biogarden-lab/static/css/main.664f4726.css.map",
-    "main.1e46151f.js.map": "/biogarden-lab/static/js/main.1e46151f.js.map"
+    "main.3684e7fb.js.map": "/biogarden-lab/static/js/main.3684e7fb.js.map"
   },
   "entrypoints": [
     "static/css/main.664f4726.css",
-    "static/js/main.1e46151f.js"
+    "static/js/main.3684e7fb.js"
   ]
 }
