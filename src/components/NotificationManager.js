@@ -5,7 +5,7 @@ export default function NotificationManager() {
 
   useEffect(() => {
     // Request notification permission on component mount
-    if ('Notification' in window && permission !== 'granted') {
+    if ("Notification" in window && permission !== "granted") {
       Notification.requestPermission().then((perm) => {
         setPermission(perm);
         console.log(`🔔 Notification permission: ${perm}`);
@@ -13,31 +13,31 @@ export default function NotificationManager() {
     }
 
     // Register service worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js')
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register(`${process.env.PUBLIC_URL}/service-worker.js`)
+
         .then(() => console.log("✅ Service Worker registered"))
-        .catch(err => console.error("❌ Service Worker registration failed:", err));
+        .catch((err) =>
+          console.error("❌ Service Worker registration failed:", err)
+        );
     }
   }, []);
 
   const sendNotification = () => {
-    if (permission !== 'granted') {
-      alert('Notifications are not allowed');
+    if (permission !== "granted") {
+      alert("Notifications are not allowed");
       return;
     }
 
-    navigator.serviceWorker.ready.then(reg => {
-      reg.showNotification('Water your plants!', {
-        body: 'Time to water your ficus 🌿',
-        icon: '/logo192.png',
-        badge: '/favicon.ico',
+    navigator.serviceWorker.ready.then((reg) => {
+      reg.showNotification("Water your plants!", {
+        body: "Time to water your ficus 🌿",
+        icon: "/logo192.png",
+        badge: "/favicon.ico",
       });
     });
   };
 
-  return (
-    <div style={{ padding: "1rem" }}>
-     
-    </div>
-  );
+  return <div style={{ padding: "1rem" }}></div>;
 }
