@@ -21,29 +21,47 @@ export default function PlantForm({ isDarkMode, onAddPlant }) {
     reader.readAsDataURL(file);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!name.trim() || !type.trim()) return;
 
     const newPlant = {
-      id: Date.now(),
       name,
       type,
-      wateringFrequency: parseInt(wateringFrequency),
-      lastWatered: new Date(lastWatered).toISOString(),
-      favorite: false,
-      image: imageData || null,
+      waterFreq: parseInt(wateringFrequency),
+      lastWatDay: lastWatered,
+      image: imageData || "",
     };
 
-    console.log("New plant added:", newPlant);
+    try {
+      const response = await fetch("http://localhost:8000/plants", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newPlant),
+      });
 
-    onAddPlant(newPlant);
-    setName("");
-    setType("");
-    setImageData(null);
-    setWateringFrequency(7);
-    setLastWatered(new Date().toISOString().split("T")[0]);
+      if (!response.ok) {
+        throw new Error("Failed to add plant");
+      }
+
+      const savedPlant = await response.json();
+      console.log("Plant saved to backend:", savedPlant);
+
+      // если нужно обновить список на фронте
+      onAddPlant(savedPlant);
+
+      // очистить форму
+      setName("");
+      setType("");
+      setImageData(null);
+      setWateringFrequency(7);
+      setLastWatered(new Date().toISOString().split("T")[0]);
+    } catch (error) {
+      console.error("Error:", error.message);
+    }
   };
 
   return (

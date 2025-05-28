@@ -149,10 +149,10 @@ export default function PlantCard({
       )}
 
       <p style={{ margin: "0.5rem 0", color: isDarkMode ? "white" : "black" }}>
-        Last watered: {daysSince(plant.lastWatered)} days ago
+        Last watered: {daysSince(plant.lastWatDay)} days ago
       </p>
       <p style={{ margin: "0.5rem 0", color: isDarkMode ? "white" : "black" }}>
-        Water every {plant.wateringFrequency} day(s)
+        Water every {plant.waterFreq} day(s)
       </p>
 
       <div style={{ display: "flex", gap: "1rem" }}>

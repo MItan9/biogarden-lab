@@ -11,16 +11,22 @@ function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   const toggleTheme = () => setIsDarkMode((prev) => !prev);
-
-  const [plants, setPlants] = useState(() => {
-    const saved = localStorage.getItem("plants");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [plants, setPlants] = useState([]);
 
   const [filterName, setFilterName] = useState("");
   const [filterFavorite, setFilterFavorite] = useState(false);
   const [filterNeedsWater, setFilterNeedsWater] = useState(false);
   const [filterType, setFilterType] = useState("");
+
+  useEffect(() => {
+    fetch("http://localhost:8000/plants")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch plants");
+        return res.json();
+      })
+      .then((data) => setPlants(data))
+      .catch((err) => console.error("Error loading plants:", err.message));
+  }, []);
 
   const isFiltering =
     filterName.trim() !== "" ||
@@ -28,24 +34,45 @@ function App() {
     filterNeedsWater ||
     filterType !== "";
 
-  useEffect(() => {
-    localStorage.setItem("plants", JSON.stringify(plants));
-  }, [plants]);
-
   const addPlant = (plant) => {
     setPlants((prev) => [...prev, plant]);
   };
 
-  const waterPlant = (id) => {
-    setPlants(
-      plants.map((p) =>
-        p.id === id ? { ...p, lastWatered: new Date().toISOString() } : p
-      )
-    );
+  const waterPlant = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8000/plants/${id}/water`, {
+        method: "PATCH",
+      });
+
+      if (!response.ok) throw new Error("Failed to water plant");
+
+      const result = await response.json();
+
+      setPlants((prev) =>
+        prev.map((p) =>
+          p.id === id ? { ...p, lastWatered: result.lastWatDay } : p
+        )
+      );
+    } catch (error) {
+      console.error("Error watering plant:", error.message);
+    }
   };
 
-  const deletePlant = (id) => {
-    setPlants(plants.filter((p) => p.id !== id));
+  const deletePlant = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8000/plants/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete plant");
+      }
+
+      setPlants((prev) => prev.filter((p) => p.id !== id));
+    } catch (error) {
+      console.error("Error deleting plant:", error.message);
+      alert("Failed to delete the plant. Please try again.");
+    }
   };
 
   const toggleFavorite = (id) => {
@@ -80,19 +107,6 @@ function App() {
       });
     }
   }, []);
-
-  //   useEffect(() => {
-  //     plants.forEach((plant) => {
-  //       const daysSince =
-  //         (new Date() - new Date(plant.lastWatered)) / (1000 * 60 * 60 * 24);
-  //       if (
-  //         daysSince >= plant.wateringFrequency &&
-  //         Notification.permission === "granted"
-  //       ) {
-  //         new Notification(` It's time to water: ${plant.name}`);
-  //       }
-  //     });
-  //   }, [plants]);
 
   return (
     <div>
