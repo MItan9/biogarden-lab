@@ -59,7 +59,7 @@ export default function PlantCard({
     </svg>
   );
 
-  const needsWatering = daysSince(plant.lastWatered) >= plant.wateringFrequency;
+  const needsWatering = daysSince(plant.lastWatDay) >= plant.waterFreq;
 
   const showToastMessage = () => {
     if (needsWatering) {
@@ -75,7 +75,7 @@ export default function PlantCard({
       }, 5000);
     }
   };
-
+  console.log(plant);
   return (
     <div
       onMouseEnter={showToastMessage}
@@ -130,7 +130,7 @@ export default function PlantCard({
             fontSize: "1.5rem",
           }}
         >
-          {plant.favorite ? liked : simple}
+          {plant.favourite ? liked : simple}
         </button>
       </div>
 

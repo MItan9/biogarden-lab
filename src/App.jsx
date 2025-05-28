@@ -75,10 +75,34 @@ function App() {
     }
   };
 
-  const toggleFavorite = (id) => {
-    setPlants(
-      plants.map((p) => (p.id === id ? { ...p, favorite: !p.favorite } : p))
-    );
+  const toggleFavorite = async (id) => {
+    const plant = plants.find((p) => p.id === id);
+    const newValue = plant.favourite ? 0 : 1;
+
+    try {
+      const response = await fetch(
+        `http://localhost:8000/plants/${id}/favourite`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ favourite: newValue }),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to toggle favorite");
+
+      const result = await response.json();
+
+      setPlants((prev) =>
+        prev.map((p) =>
+          p.id === id ? { ...p, favourite: result.favourite } : p
+        )
+      );
+    } catch (error) {
+      console.error("Error toggling favorite:", error.message);
+    }
   };
 
   function daysSince(dateString) {
@@ -91,10 +115,10 @@ function App() {
     const matchName = plant.name
       .toLowerCase()
       .includes(filterName.toLowerCase());
-    const matchFavorite = filterFavorite ? plant.favorite : true;
+    const matchFavorite = filterFavorite ? plant.favourite : true;
     const matchType = filterType ? plant.type === filterType : true;
     const matchWater = filterNeedsWater
-      ? daysSince(plant.lastWatered) >= plant.wateringFrequency
+      ? daysSince(plant.lastWatDay) >= plant.waterFreq
       : true;
 
     return matchName && matchFavorite && matchType && matchWater;
