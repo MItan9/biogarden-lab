@@ -73,6 +73,27 @@ function App() {
     return matchName && matchFavorite && matchType && matchWater;
   });
 
+  useEffect(() => {
+    if ("Notification" in window) {
+      Notification.requestPermission().then((permission) => {
+        console.log("Notification permission:", permission);
+      });
+    }
+  }, []);
+
+  //   useEffect(() => {
+  //     plants.forEach((plant) => {
+  //       const daysSince =
+  //         (new Date() - new Date(plant.lastWatered)) / (1000 * 60 * 60 * 24);
+  //       if (
+  //         daysSince >= plant.wateringFrequency &&
+  //         Notification.permission === "granted"
+  //       ) {
+  //         new Notification(` It's time to water: ${plant.name}`);
+  //       }
+  //     });
+  //   }, [plants]);
+
   return (
     <div>
       <div
