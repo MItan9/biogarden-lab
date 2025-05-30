@@ -1,7 +1,7 @@
 import React from "react";
 import logo from "../assets/tree.png";
 
-export default function Header({ isDarkMode, toggleTheme }) {
+export default function Header({ isDarkMode, toggleTheme, onLogout }) {
   return (
     <header
       style={{
@@ -26,20 +26,40 @@ export default function Header({ isDarkMode, toggleTheme }) {
         />
         <h1 style={{ marginTop: "2.85rem" }}> BioGarden</h1>
       </div>
-      <button
-        onClick={toggleTheme}
+      <div
         style={{
+          display: "flex",
           padding: "0.5rem 1rem",
-          background: "none",
-          border: "1px solid currentColor",
-          borderColor: "transparent",
-          cursor: "pointer",
-          color: isDarkMode ? "#fff" : "#000",
-          fontSize: "1.5rem",
         }}
       >
-        {isDarkMode ? "🌙" : "🌞"}
-      </button>
+        <button
+          onClick={toggleTheme}
+          style={{
+            background: "none",
+            border: "1px solid currentColor",
+            borderColor: "transparent",
+            cursor: "pointer",
+            color: isDarkMode ? "#fff" : "#000",
+            fontSize: "1.5rem",
+          }}
+        >
+          {isDarkMode ? "🌙" : "🌞"}
+        </button>
+
+        <button
+          onClick={onLogout}
+          style={{
+            background: "none",
+            border: "1px solid currentColor",
+            borderColor: "transparent",
+            cursor: "pointer",
+            color: isDarkMode ? "#fff" : "#000",
+            fontSize: "1rem",
+          }}
+        >
+          Logout
+        </button>
+      </div>
     </header>
   );
 }

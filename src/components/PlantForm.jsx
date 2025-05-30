@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./PlantForm.css";
 
-export default function PlantForm({ isDarkMode, onAddPlant }) {
+export default function PlantForm({ isDarkMode, onAddPlant, role }) {
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [wateringFrequency, setWateringFrequency] = useState(7);
@@ -9,6 +9,7 @@ export default function PlantForm({ isDarkMode, onAddPlant }) {
     new Date().toISOString().split("T")[0]
   ); // today by default
   const [imageData, setImageData] = useState(null);
+  let token = localStorage.getItem("token");
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -23,6 +24,10 @@ export default function PlantForm({ isDarkMode, onAddPlant }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (role !== "admin") {
+      alert("Only admin can add new plants");
+      return;
+    }
 
     if (!name.trim() || !type.trim()) return;
 
@@ -39,9 +44,16 @@ export default function PlantForm({ isDarkMode, onAddPlant }) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(newPlant),
       });
+
+      if (response.status === 401 || response.status === 403) {
+        localStorage.removeItem("token");
+        let token = null;
+        throw new Error("Token expired or unauthorized");
+      }
 
       if (!response.ok) {
         throw new Error("Failed to add plant");

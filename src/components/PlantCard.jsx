@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -15,8 +15,10 @@ export default function PlantCard({
   onDelete,
   onToggleFavorite,
   isDarkMode,
+  role,
 }) {
   const hasShown = useRef(false);
+  const [watered, setWatered] = useState(false);
 
   const simple = (
     <svg
@@ -122,13 +124,18 @@ export default function PlantCard({
           </span>
         </h3>
         <button
-          onClick={() => onToggleFavorite(plant.id)}
+          onClick={() => {
+            if (role !== "admin")
+              return alert("Only admin can add favourite plants");
+            onToggleFavorite(plant.id);
+          }}
           style={{
             background: "none",
             border: "none",
             cursor: "pointer",
             fontSize: "1.5rem",
           }}
+          disabled={role !== "admin"}
         >
           {plant.favourite ? liked : simple}
         </button>
@@ -157,7 +164,10 @@ export default function PlantCard({
 
       <div style={{ display: "flex", gap: "1rem" }}>
         <button
-          onClick={() => onWater(plant.id)}
+          onClick={() => {
+            if (role !== "admin") return alert("Only admin can water plants");
+            onWater(plant.id);
+          }}
           style={{
             background: isDarkMode ? "rgb(38, 86, 39)" : " rgb(76, 175, 80)",
             color: "#fff",
@@ -166,12 +176,16 @@ export default function PlantCard({
             borderRadius: "4px",
             cursor: "pointer",
           }}
+          disabled={role !== "admin"}
         >
           Water
         </button>
 
         <button
-          onClick={() => onDelete(plant.id)}
+          onClick={() => {
+            if (role !== "admin") return alert("Only admin can delete plants");
+            onDelete(plant.id);
+          }}
           style={{
             background: " rgb(255, 0, 0)",
             color: "#fff",
@@ -180,6 +194,7 @@ export default function PlantCard({
             borderRadius: "4px",
             cursor: "pointer",
           }}
+          disabled={role !== "admin"}
         >
           Delete
         </button>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
+import Login from "./Login";
 import Header from "./components/Header";
 import PlantForm from "./components/PlantForm";
 import PlantCard from "./components/PlantCard";
@@ -7,7 +8,7 @@ import PlantFilter from "./components/PlantFilter";
 
 import NotificationManager from "./components/NotificationManager";
 
-function App() {
+export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   const toggleTheme = () => setIsDarkMode((prev) => !prev);
@@ -18,15 +19,48 @@ function App() {
   const [filterNeedsWater, setFilterNeedsWater] = useState(false);
   const [filterType, setFilterType] = useState("");
 
+  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [role, setRole] = useState();
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setToken(null);
+  };
+
   useEffect(() => {
-    fetch("http://localhost:8000/plants")
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        setRole(payload.role);
+      } catch (err) {
+        console.error("Failed to decode token:", err);
+      }
+    }
+  }, [token]);
+
+  useEffect(() => {
+    fetch("http://localhost:8000/plants", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((res) => {
+        if (res.status === 401 || res.status === 403) {
+          localStorage.removeItem("token");
+          setToken(null);
+          throw new Error("Token expired or unauthorized");
+        }
+
         if (!res.ok) throw new Error("Failed to fetch plants");
         return res.json();
       })
       .then((data) => setPlants(data))
       .catch((err) => console.error("Error loading plants:", err.message));
-  }, []);
+  }, [token]);
 
   const isFiltering =
     filterName.trim() !== "" ||
@@ -42,7 +76,15 @@ function App() {
     try {
       const response = await fetch(`http://localhost:8000/plants/${id}/water`, {
         method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+      if (response.status === 401 || response.status === 403) {
+        localStorage.removeItem("token");
+        setToken(null); // выбросить на логин
+        throw new Error("Token expired or unauthorized");
+      }
 
       if (!response.ok) throw new Error("Failed to water plant");
 
@@ -62,8 +104,16 @@ function App() {
     try {
       const response = await fetch(`http://localhost:8000/plants/${id}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
+      if (response.status === 401 || response.status === 403) {
+        localStorage.removeItem("token");
+        setToken(null); // выбросить на логин
+        throw new Error("Token expired or unauthorized");
+      }
       if (!response.ok) {
         throw new Error("Failed to delete plant");
       }
@@ -86,10 +136,17 @@ function App() {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ favourite: newValue }),
         }
       );
+
+      if (response.status === 401 || response.status === 403) {
+        localStorage.removeItem("token");
+        setToken(null); // выбросить на логин
+        throw new Error("Token expired or unauthorized");
+      }
 
       if (!response.ok) throw new Error("Failed to toggle favorite");
 
@@ -132,6 +189,31 @@ function App() {
     }
   }, []);
 
+  const paginatedPlants = (isFiltering ? filteredPlants : plants).slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const totalPages = Math.ceil(
+    (isFiltering ? filteredPlants.length : plants.length) / itemsPerPage
+  );
+
+  const goToNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
+
+  const goToPreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterName, filterFavorite, filterNeedsWater, filterType]);
+
+  if (!token) {
+    return <Login onLogin={setToken} />;
+  }
+
   return (
     <div>
       <div
@@ -148,10 +230,14 @@ function App() {
         }}
       />
       <div style={{ marginTop: "10rem" }}>
-        <Header isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+        <Header
+          isDarkMode={isDarkMode}
+          toggleTheme={toggleTheme}
+          onLogout={handleLogout}
+        />
       </div>
 
-      <PlantForm isDarkMode={isDarkMode} onAddPlant={addPlant} />
+      <PlantForm isDarkMode={isDarkMode} onAddPlant={addPlant} role={role} />
 
       <PlantFilter
         filterName={filterName}
@@ -185,30 +271,86 @@ function App() {
               onDelete={deletePlant}
               onToggleFavorite={toggleFavorite}
               isDarkMode={isDarkMode}
+              role={role}
             />
           ))}
         </div>
       ) : (
         // Показываем полный список, если фильтра нет
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "1.5rem",
-            padding: "1rem",
-            alignItems: "stretch",
-          }}
-        >
-          {plants.map((plant) => (
-            <PlantCard
-              key={plant.id}
-              plant={plant}
-              onWater={waterPlant}
-              onDelete={deletePlant}
-              onToggleFavorite={toggleFavorite}
-              isDarkMode={isDarkMode}
-            />
-          ))}
+        // <div
+        //   style={{
+        //     display: "grid",
+        //     gridTemplateColumns: "repeat(3, 1fr)",
+        //     gap: "1.5rem",
+        //     padding: "1rem",
+        //     alignItems: "stretch",
+        //   }}
+        // >
+        //   {plants.map((plant) => (
+        //     <PlantCard
+        //       key={plant.id}
+        //       plant={plant}
+        //       onWater={waterPlant}
+        //       onDelete={deletePlant}
+        //       onToggleFavorite={toggleFavorite}
+        //       isDarkMode={isDarkMode}
+        //       role={role}
+        //     />
+        //   ))}
+        // </div>
+        <div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+              gap: "1.5rem",
+              justifyItems: "center",
+              padding: "2rem",
+            }}
+          >
+            {paginatedPlants.map((plant) => (
+              <PlantCard
+                key={plant.id}
+                plant={plant}
+                onWater={waterPlant}
+                onDelete={deletePlant}
+                onToggleFavorite={toggleFavorite}
+                isDarkMode={isDarkMode}
+                role={role}
+              />
+            ))}
+          </div>
+          <div style={{ textAlign: "center", marginTop: "1rem" }}>
+            <button
+              onClick={goToPreviousPage}
+              disabled={currentPage === 1}
+              style={{
+                color: "black",
+                backgroundColor: "transparent",
+                border: "none",
+                cursor: "pointer",
+                fontSize: "1.5rem",
+              }}
+            >
+              ⬅
+            </button>
+            <span style={{ margin: "0 1rem" }}>
+              {currentPage} from {totalPages}
+            </span>
+            <button
+              style={{
+                color: "black",
+                backgroundColor: "transparent",
+                border: "none",
+                cursor: "pointer",
+                fontSize: "1.5rem",
+              }}
+              onClick={goToNextPage}
+              disabled={currentPage === totalPages}
+            >
+              ➡
+            </button>
+          </div>
         </div>
       )}
 
@@ -218,5 +360,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
